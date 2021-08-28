@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 char board[3][3], DEFAULT_CHARACTER = '?';
-bool ai_turn = true, stay = true;
+bool aiTurn = true, stay = true;
 
 /*
  Utility Functions
@@ -15,49 +15,50 @@ bool ai_turn = true, stay = true;
   set all board pieces to c
 */
 void set(char c) {
-  int i, j, length;
-  for (i = 0; i < 3; i++) {
-    for (j = 0; j < 3; j++) {
-      board[i][j] = c;
+  int y, x;
+  for (y = 0; y < 3; y++) {
+    for (x = 0; x < 3; x++) {
+      board[y][x] = c;
     }
   }
 }
 
 /**
-  return 100 if player X wins
-  return -100 if player O wins
+  return INT_MAX if player X wins
+  return INT_MIN if player O wins
   return 0 if tie
 */
 int getScore() {
-  int i;
+  int y, x;
   bool foundWinner = false;
-  int score = 0;
 
   // horizontal check
-  // (i,0) (i,1) (i,2)
+  // (y,0) (y,1) (y,2)
 
-  for (i = 0; foundWinner == false && i < 3; i++) {
-    foundWinner = board[i][0] != DEFAULT_CHARACTER &&
-                  board[i][0] == board[i][1] && board[i][1] == board[i][2];
+  for (y = 0; y < 3; y++) {
+    foundWinner = board[y][0] != DEFAULT_CHARACTER &&
+                  board[y][0] == board[y][1] && board[y][1] == board[y][2];
     if (foundWinner) {
-      if (board[i][0] == 'X')
-        score = 100;
-      else
-        score = -100;
+      if (board[y][0] == 'X') {
+        return INT_MAX;
+      } else {
+        return INT_MIN;
+      }
     }
   }
 
   // vertical check
-  // (0,i) (1,i) (2,i)
+  // (0,x) (1,x) (2,x)
 
-  for (int i = 0; foundWinner == false && i < 3; i++) {
-    foundWinner = board[0][i] != DEFAULT_CHARACTER &&
-                  board[0][i] == board[1][i] && board[1][i] == board[2][i];
+  for (int x = 0; x < 3; x++) {
+    foundWinner = board[0][x] != DEFAULT_CHARACTER &&
+                  board[0][x] == board[1][x] && board[1][x] == board[2][x];
     if (foundWinner) {
-      if (board[0][i] == 'X')
-        score = 100;
-      else
-        score = -100;
+      if (board[0][x] == 'X') {
+        return INT_MAX;
+      } else {
+        return INT_MIN;
+      }
     }
   }
 
@@ -65,40 +66,62 @@ int getScore() {
   // (0,0) (1,1) (2,2)
   // (0,2) (1,1) (2,0)
 
-  if (foundWinner == false) {
-    foundWinner = board[0][0] != DEFAULT_CHARACTER &&
-                  board[0][0] == board[1][1] && board[1][1] == board[2][2];
-    if (foundWinner == false)
-      foundWinner = board[0][2] != DEFAULT_CHARACTER &&
-                    board[0][2] == board[1][1] && board[1][1] == board[2][0];
+  foundWinner = (board[0][0] != DEFAULT_CHARACTER &&
+                 board[0][0] == board[1][1] && board[1][1] == board[2][2]) ||
+                (board[0][2] != DEFAULT_CHARACTER &&
+                 board[0][2] == board[1][1] && board[1][1] == board[2][0]);
 
-    if (foundWinner) {
-      if (board[1][1] == 'X')
-        score = 100;
-      else
-        score = -100;
+  if (foundWinner) {
+    if (board[1][1] == 'X') {
+      return INT_MAX;
+    } else {
+      return INT_MIN;
     }
   }
-
-  return score;
+  return 0;
 }
 
 /**
   return true if the game is over
   return false otherwise
 */
-bool isGameOver() {
-  bool gameOver = getScore() != 0;
-  if (gameOver == false) {
-    int i, j;
-    gameOver = true;
-    for (i = 0; i < 3; i++) {
-      for (j = 0; j < 3; j++) {
-        gameOver = gameOver && (board[i][j] != DEFAULT_CHARACTER);
+bool gameOver() {
+  int score = getScore();
+  if (score == INT_MIN || score == INT_MAX) {
+    return true;
+  } else {
+    int y, x;
+    for (y = 0; y < 3; y++) {
+      for (x = 0; x < 3; x++) {
+        if (board[y][x] == DEFAULT_CHARACTER) {
+          return false;
+        }
       }
     }
+    return true;
   }
-  return gameOver;
+}
+
+/**
+  return the min between a and b
+ */
+int min(int a, int b) {
+  if (a <= b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+
+/**
+  return the max between a and b
+ */
+int max(int a, int b) {
+  if (a >= b) {
+    return a;
+  } else {
+    return b;
+  }
 }
 
 /*
@@ -113,42 +136,36 @@ void print(char *temp, int y, int x) {
 }
 
 void printBindings() {
-  char *bindings[7] = {"Command:",         "q - Quit\n",      "h - Move left\n",
+  char *bindings[7] = {"Commands:",        "q - Quit\n",      "h - Move left\n",
                        "l - Move right\n", "j - Move down\n", "k - Move Up\n",
                        "e - Place \'O\'\n"};
 
   int i, y = 2, x = 25;
   for (i = 0; i < 7; i++) {
-    if (i == 1)
+    if (i == 1) {
       x++;
+    }
     print(bindings[i], y++, x);
   }
 }
 
 void printBoard() {
-  int i = 0;
-  move(2, 5);
-  printw("+---+---+---+\n");
-  move(3, 5);
-  printw("| %c | %c | %c |\n", board[i][0], board[i][1], board[i][2]);
-  i++;
-  move(4, 5);
-  printw("+---+---+---+\n");
-  move(5, 5);
-  printw("| %c | %c | %c |\n", board[i][0], board[i][1], board[i][2]);
-  i++;
-  move(6, 5);
-  printw("+---+---+---+\n");
-  move(7, 5);
-  printw("| %c | %c | %c |\n", board[i][0], board[i][1], board[i][2]);
-  move(8, 5);
+  int y, temp;
+  temp = 2;
+  for (y = 0; y < 3; y++) {
+    move(temp, 5);
+    printw("+---+---+---+\n");
+    move(temp + 1, 5);
+    printw("| %c | %c | %c |\n", board[y][0], board[y][1], board[y][2]);
+    temp += 2;
+  }
+  move(temp, 5);
   printw("+---+---+---+\n");
 }
 
-void gameStatus() {
-  char c;
+void gameOverHandler() {
+  char c, *status;
   int score = getScore();
-  char *status;
   if (score >= 1)
     status = "Game over: You lose!\n";
   else if (score <= -1)
