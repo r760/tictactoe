@@ -8,12 +8,12 @@ char board[3][3], defaultCharacter = '?', aiPlayer = 'X', realPlayer = 'O';
 bool aiTurn = true, stay = true;
 
 /*
- Utility Functions
-*/
+ * Utility Functions
+ */
 
 /**
-  set all board pieces to c
-*/
+ * set all board pieces to c
+ */
 void set(char c) {
   int y, x;
   for (y = 0; y < 3; y++) {
@@ -24,10 +24,10 @@ void set(char c) {
 }
 
 /**
-  return INT_MAX if ai player wins
-  return INT_MIN if real player wins
-  return 0 if tie
-*/
+ * return INT_MAX if ai player wins
+ * return INT_MIN if real player wins
+ * return 0 if tie
+ */
 int getScore() {
   int y, x;
   bool foundWinner = false;
@@ -82,9 +82,9 @@ int getScore() {
 }
 
 /**
-  return true if the game is over
-  return false otherwise
-*/
+ * return true if the game is over
+ * return false otherwise
+ */
 bool gameOver() {
   int score = getScore();
   if (score == INT_MIN || score == INT_MAX) {
@@ -103,7 +103,7 @@ bool gameOver() {
 }
 
 /**
-  return the min between a and b
+ * return the min between a and b
  */
 int min(int a, int b) {
   if (a <= b) {
@@ -114,7 +114,7 @@ int min(int a, int b) {
 }
 
 /**
-  return the max between a and b
+ * return the max between a and b
  */
 int max(int a, int b) {
   if (a >= b) {
@@ -125,8 +125,8 @@ int max(int a, int b) {
 }
 
 /*
-  IO Functions
-*/
+ * IO Functions
+ */
 
 void print(char *temp, int y, int x) {
   int i = 0;
@@ -166,14 +166,16 @@ void printBoard() {
 void gameOverHandler() {
   char c, *status;
   int score = getScore();
-  if (score >= 1)
+  if (score >= 1) {
     status = "Game over: You lose!\n";
-  else if (score <= -1)
+  } else if (score <= -1) {
     status = "Game over: You win!\n";
-  else
+  } else {
     status = "Game over: Tie!\n";
+  }
 
   while (true) {
+    clear();
     printBoard();
     print("Commands:\n", 2, 25);
     print("q - Quit\n", 3, 26);

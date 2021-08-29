@@ -1,8 +1,8 @@
 #include "tictactoe.h"
 
 /**
-  the minimax algorithm
-*/
+ * the minimax algorithm
+ */
 int minimax(int depth, bool maximizingPlayer) {
   if (gameOver()) {
     int score = getScore();
@@ -52,9 +52,9 @@ int minimax(int depth, bool maximizingPlayer) {
 }
 
 /**
-  using the minimax algorithm,
-  the ai places X intelligently
-*/
+ * using the minimax algorithm,
+ * the ai places X intelligently
+ */
 void ai() {
   int value, y, x, yFin, xFin;
   value = INT_MIN;
