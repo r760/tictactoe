@@ -22,10 +22,10 @@ int minimax(int depth, bool maximizingPlayer) {
 
       for (y = 0; y < 3; y++) {
         for (x = 0; x < 3; x++) {
-          if (board[y][x] == DEFAULT_CHARACTER) {
-            board[y][x] = 'X';
+          if (board[y][x] == defaultCharacter) {
+            board[y][x] = aiPlayer;
             int temp = minimax(depth + 1, false);
-            board[y][x] = DEFAULT_CHARACTER;
+            board[y][x] = defaultCharacter;
             value = max(value, temp);
           }
         }
@@ -37,10 +37,10 @@ int minimax(int depth, bool maximizingPlayer) {
 
       for (y = 0; y < 3; y++) {
         for (x = 0; x < 3; x++) {
-          if (board[y][x] == DEFAULT_CHARACTER) {
-            board[y][x] = 'O';
+          if (board[y][x] == defaultCharacter) {
+            board[y][x] = realPlayer;
             int temp = minimax(depth + 1, true);
-            board[y][x] = DEFAULT_CHARACTER;
+            board[y][x] = defaultCharacter;
             value = min(value, temp);
           }
         }
@@ -63,8 +63,8 @@ void ai() {
 
   for (y = 0; y < 3; y++) {
     for (x = 0; x < 3; x++) {
-      if (board[y][x] == DEFAULT_CHARACTER) {
-        board[y][x] = 'X';
+      if (board[y][x] == defaultCharacter) {
+        board[y][x] = aiPlayer;
         int temp = minimax(0, true);
 
         if (temp > value) {
@@ -72,15 +72,15 @@ void ai() {
           xFin = x;
           value = temp;
         }
-        board[y][x] = DEFAULT_CHARACTER;
+        board[y][x] = defaultCharacter;
       }
     }
   }
-  board[yFin][xFin] = 'X';
+  board[yFin][xFin] = aiPlayer;
 }
 
 int main() {
-  set(DEFAULT_CHARACTER);
+  set(defaultCharacter);
   initscr();
 
   int y = 3, x = 7;
@@ -116,8 +116,8 @@ int main() {
       } else if ((c == 'k') && y > 3) {
         y -= 2;
       } else if ((c == 'e') &&
-                 board[(y - 3) / 2][(x - 7) / 4] == DEFAULT_CHARACTER) {
-        board[(y - 3) / 2][(x - 7) / 4] = 'O';
+                 board[(y - 3) / 2][(x - 7) / 4] == defaultCharacter) {
+        board[(y - 3) / 2][(x - 7) / 4] = realPlayer;
         if (gameOver()) {
           gameOverHandler();
         }

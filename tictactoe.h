@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char board[3][3], DEFAULT_CHARACTER = '?';
+char board[3][3], defaultCharacter = '?', aiPlayer = 'X', realPlayer = 'O';
 bool aiTurn = true, stay = true;
 
 /*
@@ -24,8 +24,8 @@ void set(char c) {
 }
 
 /**
-  return INT_MAX if player X wins
-  return INT_MIN if player O wins
+  return INT_MAX if ai player wins
+  return INT_MIN if real player wins
   return 0 if tie
 */
 int getScore() {
@@ -36,10 +36,10 @@ int getScore() {
   // (y,0) (y,1) (y,2)
 
   for (y = 0; y < 3; y++) {
-    foundWinner = board[y][0] != DEFAULT_CHARACTER &&
+    foundWinner = board[y][0] != defaultCharacter &&
                   board[y][0] == board[y][1] && board[y][1] == board[y][2];
     if (foundWinner) {
-      if (board[y][0] == 'X') {
+      if (board[y][0] == aiPlayer) {
         return INT_MAX;
       } else {
         return INT_MIN;
@@ -51,10 +51,10 @@ int getScore() {
   // (0,x) (1,x) (2,x)
 
   for (int x = 0; x < 3; x++) {
-    foundWinner = board[0][x] != DEFAULT_CHARACTER &&
+    foundWinner = board[0][x] != defaultCharacter &&
                   board[0][x] == board[1][x] && board[1][x] == board[2][x];
     if (foundWinner) {
-      if (board[0][x] == 'X') {
+      if (board[0][x] == aiPlayer) {
         return INT_MAX;
       } else {
         return INT_MIN;
@@ -66,13 +66,13 @@ int getScore() {
   // (0,0) (1,1) (2,2)
   // (0,2) (1,1) (2,0)
 
-  foundWinner = (board[0][0] != DEFAULT_CHARACTER &&
+  foundWinner = (board[0][0] != defaultCharacter &&
                  board[0][0] == board[1][1] && board[1][1] == board[2][2]) ||
-                (board[0][2] != DEFAULT_CHARACTER &&
+                (board[0][2] != defaultCharacter &&
                  board[0][2] == board[1][1] && board[1][1] == board[2][0]);
 
   if (foundWinner) {
-    if (board[1][1] == 'X') {
+    if (board[1][1] == aiPlayer) {
       return INT_MAX;
     } else {
       return INT_MIN;
@@ -93,7 +93,7 @@ bool gameOver() {
     int y, x;
     for (y = 0; y < 3; y++) {
       for (x = 0; x < 3; x++) {
-        if (board[y][x] == DEFAULT_CHARACTER) {
+        if (board[y][x] == defaultCharacter) {
           return false;
         }
       }
@@ -187,7 +187,7 @@ void gameOverHandler() {
       stay = false;
       break;
     } else if (c == 'n') {
-      set(DEFAULT_CHARACTER);
+      set(defaultCharacter);
       break;
     }
   }
