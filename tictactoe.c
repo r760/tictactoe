@@ -98,6 +98,7 @@ int main() {
     }
 
     clear();
+    printScore();
     printBoard();
     printBindings();
     move(y, x);

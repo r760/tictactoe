@@ -6,6 +6,7 @@
 
 char board[3][3], defaultCharacter = '?', aiPlayer = 'X', realPlayer = 'O';
 bool aiTurn = true, stay = true;
+int aiPlayerWinCount = 0, realPlayerWinCount = 0;
 
 /*
  * Utility Functions
@@ -163,25 +164,36 @@ void printBoard() {
   printw("+---+---+---+\n");
 }
 
+void printScore() {
+  // int score = getScore();
+  // move(2, 39);
+  // printw("SCORE (%d)\n", score);
+  move(9, 5);
+  printw("AI (%d) - YOU (%d)\n", aiPlayerWinCount, realPlayerWinCount);
+}
+
 void gameOverHandler() {
   char c, *status;
   int score = getScore();
   if (score >= 1) {
     status = "Game over: You lose!\n";
+    aiPlayerWinCount++;
   } else if (score <= -1) {
     status = "Game over: You win!\n";
+    realPlayerWinCount++;
   } else {
     status = "Game over: Tie!\n";
   }
 
   while (true) {
     clear();
+    printScore();
     printBoard();
     print("Commands:\n", 2, 25);
     print("q - Quit\n", 3, 26);
     print("n - New game\n", 4, 26);
-    print(status, 10, 5);
-    move(10, 25);
+    print(status, 11, 5);
+    move(11, 25);
     refresh();
 
     c = getch();
